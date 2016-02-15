@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 
-namespace ComvenientHanYoung
+namespace ConvenientHanYoung
 {
     class Program : Form
     {
@@ -18,6 +18,10 @@ namespace ComvenientHanYoung
         private static LowLevelKeyboardProc _proc = HookCallback;
         private static IntPtr _hookID = IntPtr.Zero;
 
+        private const string APP_NAME = "ConvenientHanYoung";
+        private const string START_WITH_REGISTRY_KEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+        private RegistryUtil registryUtil;
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -28,7 +32,14 @@ namespace ComvenientHanYoung
 
         public Program()
         {
+            registryUtil = new RegistryUtil(Application.ExecutablePath.ToString());
+
+            MenuItem startWithMenu = new MenuItem();
+            startWithMenu.Text = "윈도 시작 시 같이 실행";
+            startWithMenu.Checked = registryUtil.isRegisteredForStartProgram;
+            startWithMenu.Click += OnToggleStartWith;
             trayMenu = new ContextMenu();
+            trayMenu.MenuItems.Add(startWithMenu);
             trayMenu.MenuItems.Add("종료", OnExit);
 
             trayIcon = new NotifyIcon();
@@ -59,6 +70,13 @@ namespace ComvenientHanYoung
         private void OnExit(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void OnToggleStartWith(object sender, EventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            registryUtil.registerForStartProgram(item.Checked);
+            item.Checked = !item.Checked;
         }
 
         private static IntPtr SetHook(LowLevelKeyboardProc proc)
