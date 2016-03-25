@@ -75,7 +75,7 @@ namespace ConvenientHanYoung
         private void OnToggleStartWith(object sender, EventArgs e)
         {
             MenuItem item = (MenuItem)sender;
-            registryUtil.registerForStartProgram(item.Checked);
+            registryUtil.registerForStartProgram(!item.Checked);
             item.Checked = !item.Checked;
         }
 

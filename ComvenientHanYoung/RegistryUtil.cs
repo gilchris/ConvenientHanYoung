@@ -16,6 +16,11 @@ namespace ConvenientHanYoung
         public RegistryUtil(string execetablePath)
         {
             this.execetablePath = execetablePath;
+            // 현재 프로그램이 실행된 위치와 레지스트리에 등록된 정보가 다르면 덮어씌우기 위해 다음과 같이 실행
+            if (isRegisteredForStartProgram)
+            {
+                registerForStartProgram(true);
+            }
         }
 
         public bool isRegisteredForStartProgram
