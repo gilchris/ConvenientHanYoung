@@ -93,7 +93,6 @@ namespace ConvenientHanYoung
         private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
         private static bool isLShiftKeyDown = false;
-        private static bool isLCtrlKeyDown = false;
 
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
@@ -103,15 +102,11 @@ namespace ConvenientHanYoung
                 Keys key = (Keys)vkCode;
                 if (wParam == (IntPtr)WM_KEYDOWN)
                 {
-                    if (Keys.LControlKey.Equals(key))
-                    {
-                        isLCtrlKeyDown = true;
-                    }
-                    else if (Keys.LShiftKey.Equals(key))
+                    if (Keys.LShiftKey.Equals(key))
                     {
                         isLShiftKeyDown = true;
                     }
-                    else if ((isLCtrlKeyDown || isLShiftKeyDown) && Keys.Space.Equals(key))
+                    else if (isLShiftKeyDown && Keys.Space.Equals(key))
                     {
                         // raise keyboard event
                         // 0x15 is hangul mode key https://msdn.microsoft.com/ko-kr/library/windows/desktop/dd375731%28v=vs.85%29.aspx
@@ -121,11 +116,7 @@ namespace ConvenientHanYoung
                 }
                 else if (wParam == (IntPtr)WM_KEYUP)
                 {
-                    if (Keys.LControlKey.Equals(key))
-                    {
-                        isLCtrlKeyDown = false;
-                    }
-                    else if (Keys.LShiftKey.Equals(key))
+                    if (Keys.LShiftKey.Equals(key))
                     {
                         isLShiftKeyDown = false;
                     }
